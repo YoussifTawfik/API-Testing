@@ -15,6 +15,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Collections;
+import java.util.List;
+
 @ExtendWith(MockitoExtension.class)
 public class EmployeeServiceTests {
 
@@ -75,5 +78,37 @@ public class EmployeeServiceTests {
 
         // verify that employeeRepository.save() never be called, because it will not be called if the exception has been thrown
         Mockito.verify(employeeRepository,Mockito.never()).save(Mockito.any(Employee.class));
+    }
+
+    @Test
+    @DisplayName("Get All Employees")
+    public void givenEmployeeList_whenGetAll_thenReturnAllEmployees(){
+        // given - setup
+        Employee employee2 = Employee.builder()
+                .firstName("Tony")
+                .lastName("Stark")
+                .email("stark@gmail.com")
+                .salary(5000.0)
+                .build();
+        BDDMockito.given(employeeRepository.findAll()).willReturn(List.of(employee,employee2));
+        // when - action
+        List<Employee> employeeList=employeeService.getAllEmployees();
+        // then - verify
+        Assertions.assertThat(employeeList).isNotNull();
+        Assertions.assertThat(employeeList.size()).isEqualTo(2);
+
+    }
+
+    @Test
+    @DisplayName("Get All Employees (Empty List)")
+    public void givenEmptyList_whenGetAll_thenEmptyEmployeeList(){
+        // given - setup
+        BDDMockito.given(employeeRepository.findAll()).willReturn(Collections.emptyList());
+        // when - action
+        List<Employee> employeeList=employeeService.getAllEmployees();
+        // then - verify
+        Assertions.assertThat(employeeList).isEmpty();
+        Assertions.assertThat(employeeList.size()).isEqualTo(0);
+
     }
 }

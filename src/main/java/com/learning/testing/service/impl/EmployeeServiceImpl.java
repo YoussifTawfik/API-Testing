@@ -7,6 +7,8 @@ import com.learning.testing.service.EmployeeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class EmployeeServiceImpl implements EmployeeService {
@@ -21,5 +23,10 @@ public class EmployeeServiceImpl implements EmployeeService {
             throw new EmployeeAlreadyExists("Employee Already Exists with given email: "+employee.getEmail());
         }
         return employeeRepository.save(employee);
+    }
+
+    @Override
+    public List<Employee> getAllEmployees() {
+        return employeeRepository.findAll();
     }
 }
