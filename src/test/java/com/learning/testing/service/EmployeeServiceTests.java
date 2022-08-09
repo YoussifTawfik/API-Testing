@@ -111,4 +111,34 @@ public class EmployeeServiceTests {
         Assertions.assertThat(employeeList.size()).isEqualTo(0);
 
     }
+
+    @Test
+    @DisplayName("Update Employee")
+    public void givenEmployee_whenUpdate_thenReturnUpdatedEmployee(){
+        // given - setup
+        BDDMockito.given(employeeRepository.save(employee)).willReturn(employee);
+        employee.setEmail("test@gmail.com");
+        employee.setFirstName("Test");
+        // when - action
+        Employee updatedEmployee=employeeService.updateEmployee(employee);
+        // then - verify
+        Assertions.assertThat(updatedEmployee.getEmail()).isEqualTo("test@gmail.com");
+        Assertions.assertThat(updatedEmployee.getFirstName()).isEqualTo("Test");
+
+    }
+
+    @Test
+    @DisplayName("Delete Employee")
+    public void givenEmployeeId_whenDelete_thenDeleteEmployee(){
+        Long employeeId=1L;
+        // given - setup
+        // We use willDoNothing() to test the methods that return nothing (void)
+        BDDMockito.willDoNothing().given(employeeRepository).deleteById(employeeId);
+        // when - action
+        employeeRepository.deleteById(employeeId);
+        // then - verify output
+        // verify that deleteById(employeeId) has been called just one time
+        Mockito.verify(employeeRepository,Mockito.times(1)).deleteById(employeeId);
+
+    }
 }
