@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -39,4 +40,10 @@ public class EmployeeServiceImpl implements EmployeeService {
     public void deleteEmployee(Long employeeId) {
         employeeRepository.deleteById(employeeId);
     }
+
+    @Override
+    public Optional<Employee> getByEmail(String email) {
+        return Optional.of(employeeRepository.getByEmail(email));
+    }
+
 }

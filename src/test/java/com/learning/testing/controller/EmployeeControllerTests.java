@@ -1,13 +1,11 @@
 package com.learning.testing.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.learning.testing.entity.Employee;
 import com.learning.testing.service.EmployeeService;
 import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentMatcher;
 import org.mockito.ArgumentMatchers;
 import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,12 +13,14 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.List;
+import java.util.Optional;
 
 @WebMvcTest
 public class EmployeeControllerTests {
@@ -84,6 +84,35 @@ public class EmployeeControllerTests {
         result.andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.size()",CoreMatchers.is(employeeList.size())));
+    }
+
+    @Test
+    public void givenEmployeeEmail_whenGetByEmail_thenReturnEmployee() throws Exception {
+
+        // given - setup
+        BDDMockito.given(employeeService.getByEmail(employee.getEmail())).willReturn(Optional.of(employee));
+        // when - action or behavior
+        ResultActions response=mockMvc.perform(
+                MockMvcRequestBuilders.get("/api/v1/employees/{email}",employee.getEmail()));
+        // then - verify the output
+        response.andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.firstName",CoreMatchers.is(employee.getFirstName())));
+
+    }
+
+    @Test
+    public void givenEmployeeEmail_whenGetByEmail_thenReturnEmployeeNotFound() throws Exception {
+
+        // given - setup
+        BDDMockito.given(employeeService.getByEmail(employee.getEmail())).willReturn(Optional.empty());
+        // when - action or behavior
+        ResultActions response=mockMvc.perform(
+                MockMvcRequestBuilders.get("/api/v1/employees/{email}",employee.getEmail()));
+        // then - verify the output
+        response.andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
+
     }
 
 
