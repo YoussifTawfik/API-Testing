@@ -1,7 +1,6 @@
 package com.learning.testing.entity;
 
 import lombok.*;
-
 import javax.persistence.*;
 
 @Getter @Setter @AllArgsConstructor @NoArgsConstructor @Builder
